@@ -147,7 +147,7 @@ Nguồn: Xổ số đây (xosoday.vn)`;
           <span className="font-semibold text-slate-700">Mã ĐB trúng phụ:</span>
           <div className="flex gap-1.5 font-mono font-bold text-red-600">
             {data.specialCodes.map((code, idx) => (
-              <span key={idx} className="bg-red-50 border border-red-200 px-1.5 py-0.5 rounded">
+              <span key={idx} className="bg-red-50 border border-red-200 px-2 py-0.5 rounded text-sm sm:text-base font-extrabold">
                 {code}
               </span>
             ))}
@@ -197,11 +197,11 @@ Nguồn: Xổ số đây (xosoday.vn)`;
             <tbody>
               {/* Giải Đặc Biệt */}
               <tr className="border-b border-slate-200 bg-red-50/50">
-                <td className="w-24 sm:w-28 py-3.5 px-3 text-xs sm:text-sm font-bold text-red-700 bg-red-100/50 border-r border-slate-200">
+                <td className="w-24 sm:w-28 py-4 px-3 text-xs sm:text-sm font-bold text-red-700 bg-red-100/50 border-r border-slate-200">
                   Đặc Biệt
                 </td>
-                <td className="py-3.5 px-3">
-                  <span className="font-mono text-2xl sm:text-3xl font-extrabold text-red-600 tracking-wider tabular-nums">
+                <td className="py-4 px-3">
+                  <span className="font-mono text-4xl sm:text-6xl font-black text-red-600 tracking-wider tabular-nums">
                     {formatNumber(data.prizes.special[0])}
                   </span>
                 </td>
@@ -209,11 +209,11 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Nhất */}
               <tr className="border-b border-slate-100">
-                <td className="py-3 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+                <td className="py-3.5 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                   Giải Nhất
                 </td>
-                <td className="py-3 px-3">
-                  <span className="font-mono text-lg sm:text-xl font-bold text-slate-900 tracking-wide tabular-nums">
+                <td className="py-3.5 px-3">
+                  <span className="font-mono text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-wide tabular-nums">
                     {formatNumber(data.prizes.first[0])}
                   </span>
                 </td>
@@ -221,15 +221,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Nhì */}
               <tr className="border-b border-slate-100 bg-slate-50/30">
-                <td className="py-3 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+                <td className="py-3.5 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                   Giải Nhì
                 </td>
-                <td className="py-3 px-3">
+                <td className="py-3.5 px-3">
                   <div className="flex items-center justify-around flex-wrap gap-3">
                     {data.prizes.second.map((num, i) => (
                       <span
                         key={i}
-                        className="font-mono text-base sm:text-lg font-bold text-slate-900 tracking-wide tabular-nums"
+                        className="font-mono text-xl sm:text-3xl font-extrabold text-slate-900 tracking-wide tabular-nums"
                       >
                         {formatNumber(num)}
                       </span>
@@ -240,15 +240,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Ba */}
               <tr className="border-b border-slate-100">
-                <td className="py-3 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+                <td className="py-3.5 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                   Giải Ba
                 </td>
-                <td className="py-3 px-3">
-                  <div className="grid grid-cols-3 gap-y-2 gap-x-4">
+                <td className="py-3.5 px-3">
+                  <div className="grid grid-cols-3 gap-y-2.5 gap-x-4">
                     {data.prizes.third.map((num, i) => (
                       <span
                         key={i}
-                        className="font-mono text-sm sm:text-base font-bold text-slate-800 tracking-wide tabular-nums"
+                        className="font-mono text-lg sm:text-2xl font-bold text-slate-800 tracking-wide tabular-nums"
                       >
                         {formatNumber(num)}
                       </span>
@@ -259,15 +259,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Tư */}
               <tr className="border-b border-slate-100 bg-slate-50/30">
-                <td className="py-3 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+                <td className="py-3.5 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                   Giải Tư
                 </td>
-                <td className="py-3 px-3">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <td className="py-3.5 px-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                     {data.prizes.fourth.map((num, i) => (
                       <span
                         key={i}
-                        className="font-mono text-sm sm:text-base font-bold text-slate-800 tracking-wide tabular-nums"
+                        className="font-mono text-lg sm:text-2xl font-bold text-slate-800 tracking-wide tabular-nums"
                       >
                         {formatNumber(num)}
                       </span>
@@ -278,15 +278,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Năm */}
               <tr className="border-b border-slate-100">
-                <td className="py-3 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+                <td className="py-3.5 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                   Giải Năm
                 </td>
-                <td className="py-3 px-3">
-                  <div className="grid grid-cols-3 gap-y-2 gap-x-4">
+                <td className="py-3.5 px-3">
+                  <div className="grid grid-cols-3 gap-y-2.5 gap-x-4">
                     {data.prizes.fifth.map((num, i) => (
                       <span
                         key={i}
-                        className="font-mono text-sm sm:text-base font-bold text-slate-800 tracking-wide tabular-nums"
+                        className="font-mono text-lg sm:text-2xl font-bold text-slate-800 tracking-wide tabular-nums"
                       >
                         {formatNumber(num)}
                       </span>
@@ -297,15 +297,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Sáu */}
               <tr className="border-b border-slate-100 bg-slate-50/30">
-                <td className="py-3 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+                <td className="py-3.5 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                   Giải Sáu
                 </td>
-                <td className="py-3 px-3">
+                <td className="py-3.5 px-3">
                   <div className="flex items-center justify-around flex-wrap gap-3">
                     {data.prizes.sixth.map((num, i) => (
                       <span
                         key={i}
-                        className="font-mono text-base sm:text-lg font-bold text-slate-900 tracking-wide tabular-nums"
+                        className="font-mono text-xl sm:text-3xl font-extrabold text-slate-900 tracking-wide tabular-nums"
                       >
                         {formatNumber(num)}
                       </span>
@@ -316,15 +316,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Bảy */}
               <tr>
-                <td className="py-3 px-3 text-xs sm:text-sm font-bold text-red-700 bg-red-50/60 border-r border-slate-200">
+                <td className="py-3.5 px-3 text-xs sm:text-sm font-bold text-red-700 bg-red-50/60 border-r border-slate-200">
                   Giải Bảy
                 </td>
-                <td className="py-3 px-3 bg-red-50/20">
-                  <div className="grid grid-cols-4 gap-2">
+                <td className="py-3.5 px-3 bg-red-50/20">
+                  <div className="grid grid-cols-4 gap-2.5">
                     {data.prizes.seventh.map((num, i) => (
                       <span
                         key={i}
-                        className="font-mono text-base sm:text-lg font-extrabold text-red-600 tracking-wide tabular-nums"
+                        className="font-mono text-xl sm:text-3xl font-black text-red-600 tracking-wide tabular-nums"
                       >
                         {formatNumber(num)}
                       </span>
@@ -357,16 +357,16 @@ Nguồn: Xổ số đây (xosoday.vn)`;
                 const tails = data.headTail.heads[digit] || [];
                 return (
                   <tr key={digit} className="hover:bg-slate-50">
-                    <td className="py-1.5 px-2 font-mono font-bold text-center text-slate-800 bg-slate-50 border-r border-slate-200">
+                    <td className="py-2 px-2 font-mono text-sm sm:text-base font-bold text-center text-slate-800 bg-slate-50 border-r border-slate-200">
                       {digit}
                     </td>
-                    <td className="py-1.5 px-2 font-mono font-medium text-slate-700 tabular-nums">
+                    <td className="py-2 px-2 font-mono font-medium text-slate-700 tabular-nums">
                       {tails.length > 0 ? (
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-1.5">
                           {tails.map((t, idx) => (
                             <span
                               key={idx}
-                              className="px-1 py-0.2 bg-slate-100 rounded text-slate-900 font-bold"
+                              className="px-1.5 py-0.5 bg-slate-100 rounded text-slate-900 font-bold text-sm sm:text-base"
                             >
                               {digit}
                               <span className="text-red-600">{t}</span>

@@ -199,13 +199,13 @@ Nguồn: Xổ số đây (xosoday.vn)`;
           <tbody className="divide-y divide-slate-100 text-xs sm:text-sm">
             {/* Giải Tám */}
             <tr className="hover:bg-slate-50/50">
-              <td className="py-2.5 px-2 font-bold text-red-600 bg-red-50/40 border-r border-slate-200">
+              <td className="py-3 px-2 font-bold text-red-600 bg-red-50/40 border-r border-slate-200">
                 Giải Tám
               </td>
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-2.5 px-2 font-mono text-base font-extrabold text-red-600 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3 px-2 font-mono text-2xl sm:text-3xl font-black text-red-600 border-r border-slate-200 last:border-r-0 tabular-nums"
                 >
                   {formatNumber(station.prizes.eighth[0])}
                 </td>
@@ -214,13 +214,13 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
             {/* Giải Bảy */}
             <tr className="hover:bg-slate-50/50">
-              <td className="py-2.5 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+              <td className="py-3 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                 Giải Bảy
               </td>
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-2.5 px-2 font-mono font-bold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3 px-2 font-mono text-xl sm:text-2xl font-extrabold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
                 >
                   {formatNumber(station.prizes.seventh[0])}
                 </td>
@@ -229,15 +229,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
             {/* Giải Sáu */}
             <tr className="hover:bg-slate-50/50 bg-slate-50/30">
-              <td className="py-3 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+              <td className="py-3.5 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                 Giải Sáu
               </td>
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-3 px-2 font-mono font-bold text-slate-800 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3.5 px-2 font-mono text-lg sm:text-xl font-extrabold text-slate-800 border-r border-slate-200 last:border-r-0 tabular-nums"
                 >
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1.5">
                     {station.prizes.sixth.map((num, i) => (
                       <span key={i}>{formatNumber(num)}</span>
                     ))}
@@ -248,13 +248,13 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
             {/* Giải Năm */}
             <tr className="hover:bg-slate-50/50">
-              <td className="py-2.5 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+              <td className="py-3 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                 Giải Năm
               </td>
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-2.5 px-2 font-mono font-bold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3 px-2 font-mono text-xl sm:text-2xl font-extrabold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
                 >
                   {formatNumber(station.prizes.fifth[0])}
                 </td>
@@ -263,15 +263,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
             {/* Giải Tư */}
             <tr className="hover:bg-slate-50/50 bg-slate-50/30">
-              <td className="py-3.5 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+              <td className="py-4 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                 Giải Tư
               </td>
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-3.5 px-2 font-mono font-bold text-slate-800 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-4 px-2 font-mono text-base sm:text-xl font-bold text-slate-800 border-r border-slate-200 last:border-r-0 tabular-nums"
                 >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                     {station.prizes.fourth.map((num, i) => (
                       <span key={i}>{formatNumber(num)}</span>
                     ))}
@@ -282,15 +282,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
             {/* Giải Ba */}
             <tr className="hover:bg-slate-50/50">
-              <td className="py-3 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+              <td className="py-3.5 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                 Giải Ba
               </td>
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-3 px-2 font-mono font-bold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3.5 px-2 font-mono text-lg sm:text-xl font-extrabold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
                 >
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1.5">
                     {station.prizes.third.map((num, i) => (
                       <span key={i}>{formatNumber(num)}</span>
                     ))}
@@ -301,13 +301,13 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
             {/* Giải Nhì */}
             <tr className="hover:bg-slate-50/50 bg-slate-50/30">
-              <td className="py-2.5 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+              <td className="py-3 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                 Giải Nhì
               </td>
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-2.5 px-2 font-mono font-bold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3 px-2 font-mono text-xl sm:text-2xl font-extrabold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
                 >
                   {formatNumber(station.prizes.second[0])}
                 </td>
@@ -316,13 +316,13 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
             {/* Giải Nhất */}
             <tr className="hover:bg-slate-50/50">
-              <td className="py-2.5 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+              <td className="py-3.5 px-2 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                 Giải Nhất
               </td>
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-2.5 px-2 font-mono text-base font-bold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3.5 px-2 font-mono text-2xl sm:text-3xl font-black text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
                 >
                   {formatNumber(station.prizes.first[0])}
                 </td>
@@ -337,7 +337,7 @@ Nguồn: Xổ số đây (xosoday.vn)`;
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-4 px-2 font-mono text-xl sm:text-2xl font-black text-red-600 border-r border-slate-200 last:border-r-0 tracking-wider tabular-nums"
+                  className="py-4 px-2 font-mono text-3xl sm:text-5xl font-black text-red-600 border-r border-slate-200 last:border-r-0 tracking-wider tabular-nums"
                 >
                   {formatNumber(station.prizes.special[0])}
                 </td>
@@ -367,13 +367,13 @@ Nguồn: Xổ số đây (xosoday.vn)`;
                   const tails = station.headTail.heads[digit] || [];
                   return (
                     <div key={digit} className="flex items-center gap-2 py-0.5">
-                      <span className="w-5 font-mono font-bold text-slate-900 bg-slate-100 text-center rounded">
+                      <span className="w-6 h-6 font-mono font-bold text-slate-900 bg-slate-100 text-center rounded flex items-center justify-center text-sm">
                         {digit}
                       </span>
                       <span className="font-mono text-slate-600 tabular-nums">
                         {tails.length > 0 ? (
                           tails.map((t, idx) => (
-                            <span key={idx} className="mr-1.5 font-medium text-slate-800">
+                            <span key={idx} className="mr-2 font-medium text-slate-800 text-sm sm:text-base">
                               {digit}
                               <span className="text-red-600 font-bold">{t}</span>
                             </span>
