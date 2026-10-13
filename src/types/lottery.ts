@@ -13,6 +13,8 @@ export interface LotteryResultMB {
   date: string; // YYYY-MM-DD
   region: 'MB';
   stationName: string;
+  isPending?: boolean; // Chế độ chờ đợi cập nhật kết quả (ngày tương lai hoặc chưa mở thưởng)
+  drawTime?: string;   // Ví dụ '18:15'
   specialCodes: string[]; // Ký hiệu vé đặc biệt ví dụ ['8K', '4D', '2P']
   prizes: {
     special: string[]; // 1 giải 5 số
@@ -45,6 +47,7 @@ export interface PrizeMNMT {
 export interface StationResultMNMT {
   stationId: string;
   stationName: string;
+  isPending?: boolean;
   prizes: PrizeMNMT;
   headTail: {
     heads: Record<number, string[]>;
@@ -56,6 +59,8 @@ export interface LotteryResultMNMT {
   id: string;
   date: string;
   region: 'MN' | 'MT';
+  isPending?: boolean; // Chế độ chờ đợi cập nhật kết quả
+  drawTime?: string;   // Ví dụ '16:15' hoặc '17:15'
   stations: StationResultMNMT[];
 }
 

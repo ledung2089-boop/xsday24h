@@ -8,6 +8,10 @@ import {
   computeHeadTail,
   generateMBResult,
   generateMNMTResult,
+  isFutureDate,
+  isBeforeDrawTime,
+  createPendingMBResult,
+  createPendingMNMTResult,
 } from '../data/lotteryData';
 
 export const DEFAULT_XOSO_API_KEY =
@@ -73,6 +77,11 @@ export async function fetchLiveMBResult(
   dateStr: string,
   apiKey: string = getStoredApiKey()
 ): Promise<{ result: LotteryResultMB; isLive: boolean }> {
+  // If date is in the future, return pending result immediately
+  if (isFutureDate(dateStr)) {
+    return { result: createPendingMBResult(dateStr), isLive: false };
+  }
+
   const cacheKey = `MB_${dateStr}_${apiKey}`;
   if (cache.has(cacheKey)) {
     return { result: cache.get(cacheKey), isLive: true };
@@ -126,6 +135,8 @@ export async function fetchLiveMBResult(
           date: dateStr,
           region: 'MB',
           stationName: item.province?.name || 'Miền Bắc',
+          isPending: false,
+          drawTime: '18:15',
           specialCodes: specialCodes.length > 0 ? specialCodes : ['1K', '2D', '3M'],
           prizes: {
             special,
@@ -148,7 +159,12 @@ export async function fetchLiveMBResult(
     console.warn(`[xosoapi] Fetch MB failed for ${dateStr}, falling back to generator:`, error);
   }
 
-  // Graceful fallback
+  // If today and before draw time or draw has not completed yet, show pending
+  if (isBeforeDrawTime(dateStr, 'MB')) {
+    return { result: createPendingMBResult(dateStr), isLive: false };
+  }
+
+  // Graceful fallback for past dates
   return { result: generateMBResult(dateStr), isLive: false };
 }
 
@@ -160,6 +176,11 @@ export async function fetchLiveMNMTResult(
   region: 'MN' | 'MT',
   apiKey: string = getStoredApiKey()
 ): Promise<{ result: LotteryResultMNMT; isLive: boolean }> {
+  // If date is in the future, return pending result immediately
+  if (isFutureDate(dateStr)) {
+    return { result: createPendingMNMTResult(dateStr, region), isLive: false };
+  }
+
   const cacheKey = `${region}_${dateStr}_${apiKey}`;
   if (cache.has(cacheKey)) {
     return { result: cache.get(cacheKey), isLive: true };
@@ -253,6 +274,11 @@ export async function fetchLiveMNMTResult(
     console.warn(`[xosoapi] Fetch ${region} failed for ${dateStr}, falling back to generator:`, error);
   }
 
-  // Graceful fallback
+  // If today and before draw time or draw has not completed yet, show pending
+  if (isBeforeDrawTime(dateStr, region)) {
+    return { result: createPendingMNMTResult(dateStr, region), isLive: false };
+  }
+
+  // Graceful fallback for past dates
   return { result: generateMNMTResult(dateStr, region), isLive: false };
 }

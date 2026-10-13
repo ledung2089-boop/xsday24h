@@ -112,8 +112,153 @@ function padNumber(n: number, length: number): string {
   return n.toString().padStart(length, '0');
 }
 
-// Generate seeded MB result
+// Date helpers
+export function getTodayDateString(): string {
+  try {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Ho_Chi_Minh',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    return formatter.format(new Date());
+  } catch {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+}
+
+export function getOffsetDateString(offsetDays: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  try {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Ho_Chi_Minh',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    return formatter.format(d);
+  } catch {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+}
+
+export function isFutureDate(dateStr: string): boolean {
+  const today = getTodayDateString();
+  return dateStr > today;
+}
+
+export function isBeforeDrawTime(dateStr: string, region: 'MB' | 'MN' | 'MT'): boolean {
+  const today = getTodayDateString();
+  if (dateStr > today) return true;
+  if (dateStr < today) return false;
+
+  try {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Ho_Chi_Minh',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: false,
+    });
+    const parts = formatter.formatToParts(now);
+    const hour = parseInt(parts.find((p) => p.type === 'hour')?.value || '0', 10);
+    const minute = parseInt(parts.find((p) => p.type === 'minute')?.value || '0', 10);
+    const currentMins = hour * 60 + minute;
+
+    const drawMins =
+      region === 'MB' ? 18 * 60 + 15 : region === 'MT' ? 17 * 60 + 15 : 16 * 60 + 15;
+    return currentMins < drawMins;
+  } catch {
+    return false;
+  }
+}
+
+// Generate pending result for future date (MB)
+export function createPendingMBResult(dateStr: string): LotteryResultMB {
+  const dateObj = new Date(dateStr);
+  const day = dateObj.getDay();
+  const stationInfo = LOTTERY_STATIONS.find(
+    (s) => s.region === 'MB' && s.daysOfWeek.includes(day)
+  );
+
+  return {
+    id: `mb_pending_${dateStr}`,
+    date: dateStr,
+    region: 'MB',
+    stationName: stationInfo ? stationInfo.name : 'Miền Bắc (Hà Nội)',
+    isPending: true,
+    drawTime: '18:15',
+    specialCodes: ['Chờ', 'quay', 'thưởng'],
+    prizes: {
+      special: ['-----'],
+      first: ['-----'],
+      second: ['-----', '-----'],
+      third: ['-----', '-----', '-----', '-----', '-----', '-----'],
+      fourth: ['----', '----', '----', '----'],
+      fifth: ['----', '----', '----', '----', '----', '----'],
+      sixth: ['---', '---', '---'],
+      seventh: ['--', '--', '--', '--'],
+    },
+    headTail: {
+      heads: { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] },
+      tails: { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] },
+    },
+  };
+}
+
+// Generate pending result for future date (MN / MT)
+export function createPendingMNMTResult(dateStr: string, region: 'MN' | 'MT'): LotteryResultMNMT {
+  const dateObj = new Date(dateStr);
+  const day = dateObj.getDay();
+  const dayStations = LOTTERY_STATIONS.filter(
+    (s) => s.region === region && s.daysOfWeek.includes(day)
+  );
+
+  const stations = dayStations.map((station) => ({
+    stationId: station.id,
+    stationName: station.name,
+    isPending: true,
+    prizes: {
+      eighth: ['--'],
+      seventh: ['---'],
+      sixth: ['----', '----', '----'],
+      fifth: ['----'],
+      fourth: ['-----', '-----', '-----', '-----', '-----', '-----', '-----'],
+      third: ['-----', '-----'],
+      second: ['-----'],
+      first: ['-----'],
+      special: ['------'],
+    },
+    headTail: {
+      heads: { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] },
+      tails: { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] },
+    },
+  }));
+
+  return {
+    id: `${region.toLowerCase()}_pending_${dateStr}`,
+    date: dateStr,
+    region,
+    isPending: true,
+    drawTime: region === 'MN' ? '16:15' : '17:15',
+    stations,
+  };
+}
+
+// Generate seeded MB result (or pending for future dates)
 export function generateMBResult(dateStr: string): LotteryResultMB {
+  if (isFutureDate(dateStr)) {
+    return createPendingMBResult(dateStr);
+  }
+
   const rng = createSeededRandom(`MB_${dateStr}`);
   const genNum = (digits: number) => {
     const max = Math.pow(10, digits);
@@ -157,6 +302,8 @@ export function generateMBResult(dateStr: string): LotteryResultMB {
     date: dateStr,
     region: 'MB',
     stationName: stationInfo ? stationInfo.name : 'Miền Bắc (Hà Nội)',
+    isPending: false,
+    drawTime: '18:15',
     specialCodes: shuffledCodes,
     prizes: {
       special,
@@ -172,8 +319,12 @@ export function generateMBResult(dateStr: string): LotteryResultMB {
   };
 }
 
-// Generate seeded MN / MT result
+// Generate seeded MN / MT result (or pending for future dates)
 export function generateMNMTResult(dateStr: string, region: 'MN' | 'MT'): LotteryResultMNMT {
+  if (isFutureDate(dateStr)) {
+    return createPendingMNMTResult(dateStr, region);
+  }
+
   const dateObj = new Date(dateStr);
   const day = dateObj.getDay();
   const dayStations = LOTTERY_STATIONS.filter(
@@ -222,6 +373,7 @@ export function generateMNMTResult(dateStr: string, region: 'MN' | 'MT'): Lotter
     return {
       stationId: station.id,
       stationName: station.name,
+      isPending: false,
       prizes: {
         special,
         first,
@@ -241,13 +393,16 @@ export function generateMNMTResult(dateStr: string, region: 'MN' | 'MT'): Lotter
     id: `${region.toLowerCase()}_${dateStr}`,
     date: dateStr,
     region,
+    isPending: false,
+    drawTime: region === 'MN' ? '16:15' : '17:15',
     stations,
   };
 }
 
-// Default today & yesterday formatted date
-export const TODAY_STR = '2026-10-12';
-export const YESTERDAY_STR = '2026-10-11';
+// Default today, yesterday & tomorrow formatted dates
+export const TODAY_STR = getTodayDateString();
+export const YESTERDAY_STR = getOffsetDateString(-1);
+export const TOMORROW_STR = getOffsetDateString(1);
 
 // Initial Vietlott Data
 export const VIETLOTT_MEGA_645: VietlottDraw = {

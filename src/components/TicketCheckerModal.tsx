@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
-import { X, Trophy, Sparkles } from 'lucide-react';
+import { X, Trophy, Sparkles, Clock } from 'lucide-react';
 import { Region, CheckTicketResult } from '../types/lottery';
-import { LOTTERY_STATIONS, TODAY_STR, generateMBResult, generateMNMTResult } from '../data/lotteryData';
+import {
+  LOTTERY_STATIONS,
+  TODAY_STR,
+  generateMBResult,
+  generateMNMTResult,
+  isFutureDate,
+} from '../data/lotteryData';
 import { checkTicketMB, checkTicketMNMT, formatVND } from '../utils/lotteryChecker';
 import { sound } from '../utils/audio';
 import { XoSoDayLogo } from './Logo';
@@ -24,6 +30,7 @@ export const TicketCheckerModal: React.FC<TicketCheckerModalProps> = ({
   const [result, setResult] = useState<CheckTicketResult | null>(null);
   const [checked, setChecked] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isPendingDate, setIsPendingDate] = useState<boolean>(false);
 
   if (!isOpen) return null;
 
@@ -33,6 +40,7 @@ export const TicketCheckerModal: React.FC<TicketCheckerModalProps> = ({
     setRegion(newReg);
     setResult(null);
     setChecked(false);
+    setIsPendingDate(false);
     const stations = LOTTERY_STATIONS.filter((s) => s.region === newReg);
     if (stations.length > 0) setStationId(stations[0].id);
   };
@@ -42,14 +50,36 @@ export const TicketCheckerModal: React.FC<TicketCheckerModalProps> = ({
     const clean = ticketNumber.trim().replace(/\D/g, '');
     if (!clean) return;
 
+    if (isFutureDate(date)) {
+      setIsPendingDate(true);
+      setChecked(true);
+      setResult(null);
+      return;
+    }
+
+    setIsPendingDate(false);
     setIsLoading(true);
     let res: CheckTicketResult | null = null;
     try {
       if (region === 'MB') {
         const { result: mbData } = await fetchLiveMBResult(date);
+        if (mbData.isPending) {
+          setIsPendingDate(true);
+          setChecked(true);
+          setResult(null);
+          setIsLoading(false);
+          return;
+        }
         res = checkTicketMB(clean, mbData);
       } else {
         const { result: mnmtData } = await fetchLiveMNMTResult(date, region as 'MN' | 'MT');
+        if (mnmtData.isPending) {
+          setIsPendingDate(true);
+          setChecked(true);
+          setResult(null);
+          setIsLoading(false);
+          return;
+        }
         const station = mnmtData.stations.find((s) => s.stationId === stationId) || mnmtData.stations[0];
         if (station) {
           res = checkTicketMNMT(clean, station, date, region);
@@ -180,7 +210,22 @@ export const TicketCheckerModal: React.FC<TicketCheckerModalProps> = ({
           </button>
         </form>
 
-        {checked && result && (
+        {/* Pending Date Notice */}
+        {checked && isPendingDate && (
+          <div className="mt-4 pt-4 border-t border-slate-200 text-center">
+            <div className="bg-amber-50 border border-amber-300 rounded-lg p-3.5 text-xs text-amber-900 space-y-1">
+              <div className="flex items-center justify-center gap-1.5 font-bold text-amber-800">
+                <Clock className="w-4 h-4 text-amber-600" />
+                <span>Kỳ quay ngày {date} chưa mở thưởng</span>
+              </div>
+              <p className="text-[11px] text-amber-800">
+                Vé số dãy <strong className="font-mono text-xs">{ticketNumber}</strong> thuộc kỳ quay trong tương lai hoặc đang chờ kết quả. Vui lòng quay lại dò vé sau khi có kết quả chính thức!
+              </p>
+            </div>
+          </div>
+        )}
+
+        {checked && result && !isPendingDate && (
           <div className="mt-4 pt-4 border-t border-slate-200 text-center">
             {result.isWinner ? (
               <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">

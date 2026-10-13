@@ -10,10 +10,11 @@ import {
   TODAY_STR,
   generateMBResult,
   generateMNMTResult,
+  isFutureDate,
 } from '../data/lotteryData';
 import { checkTicketMB, checkTicketMNMT, formatVND } from '../utils/lotteryChecker';
 import { sound } from '../utils/audio';
-import { Trophy, CheckCircle2, XCircle, Sparkles, HelpCircle } from 'lucide-react';
+import { Trophy, CheckCircle2, XCircle, Sparkles, HelpCircle, Clock } from 'lucide-react';
 import { fetchLiveMBResult, fetchLiveMNMTResult } from '../services/xosoApi';
 
 export const TicketCheckerTab: React.FC = () => {
@@ -24,6 +25,7 @@ export const TicketCheckerTab: React.FC = () => {
   const [result, setResult] = useState<CheckTicketResult | null>(null);
   const [hasChecked, setHasChecked] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isPendingDate, setIsPendingDate] = useState<boolean>(false);
 
   // Available stations for selected region
   const availableStations = LOTTERY_STATIONS.filter((s) => s.region === region);
@@ -32,6 +34,7 @@ export const TicketCheckerTab: React.FC = () => {
     setRegion(newRegion);
     setResult(null);
     setHasChecked(false);
+    setIsPendingDate(false);
     const stations = LOTTERY_STATIONS.filter((s) => s.region === newRegion);
     if (stations.length > 0) {
       setStationId(stations[0].id);
@@ -43,15 +46,37 @@ export const TicketCheckerTab: React.FC = () => {
     const clean = ticketNumber.trim().replace(/\D/g, '');
     if (!clean) return;
 
+    if (isFutureDate(date)) {
+      setIsPendingDate(true);
+      setHasChecked(true);
+      setResult(null);
+      return;
+    }
+
+    setIsPendingDate(false);
     setIsLoading(true);
     let res: CheckTicketResult | null = null;
 
     try {
       if (region === 'MB') {
         const { result: mbData } = await fetchLiveMBResult(date);
+        if (mbData.isPending) {
+          setIsPendingDate(true);
+          setHasChecked(true);
+          setResult(null);
+          setIsLoading(false);
+          return;
+        }
         res = checkTicketMB(clean, mbData);
       } else {
         const { result: mnmtData } = await fetchLiveMNMTResult(date, region as 'MN' | 'MT');
+        if (mnmtData.isPending) {
+          setIsPendingDate(true);
+          setHasChecked(true);
+          setResult(null);
+          setIsLoading(false);
+          return;
+        }
         const station =
           mnmtData.stations.find((s) => s.stationId === stationId) ||
           mnmtData.stations[0];
@@ -149,8 +174,13 @@ export const TicketCheckerTab: React.FC = () => {
           {/* Date and Station Selection */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                2. Ngày Mở Thưởng
+              <label className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                <span>2. Ngày Mở Thưởng</span>
+                {isFutureDate(date) && (
+                  <span className="text-amber-800 bg-amber-100 text-[11px] px-2 py-0.5 rounded font-bold">
+                    Chờ mở thưởng
+                  </span>
+                )}
               </label>
               <input
                 type="date"
@@ -215,8 +245,25 @@ export const TicketCheckerTab: React.FC = () => {
           </button>
         </form>
 
+        {/* Pending Date Result Notice */}
+        {hasChecked && isPendingDate && (
+          <div className="mt-8 pt-8 border-t border-slate-200">
+            <div className="bg-amber-50 border border-amber-300 rounded-xl p-6 text-center space-y-3">
+              <div className="w-12 h-12 bg-amber-500 text-white rounded-full flex items-center justify-center mx-auto shadow-sm">
+                <Clock className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-amber-950">
+                Kỳ Quay Ngày {date} Đang Ở Chế Độ Chờ Mở Thưởng
+              </h3>
+              <p className="text-xs sm:text-sm text-amber-800 max-w-md mx-auto">
+                Vé số dãy <strong className="font-mono text-base text-amber-950">{ticketNumber}</strong> thuộc kỳ quay chưa diễn ra hoặc đang chờ cập nhật kết quả. Vui lòng quay lại sau giờ mở thưởng (16h15 - 18h15) để dò vé!
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Result Area */}
-        {hasChecked && result && (
+        {hasChecked && result && !isPendingDate && (
           <div className="mt-8 pt-8 border-t border-slate-200">
             {result.isWinner ? (
               <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-center space-y-4">

@@ -9,7 +9,10 @@ import {
   Maximize2,
   Minimize2,
   X,
+  Clock,
 } from 'lucide-react';
+import { WaitingResultBanner } from './WaitingResultBanner';
+import { TODAY_STR } from '../data/lotteryData';
 
 interface ResultBoardMBProps {
   data: LotteryResultMB;
@@ -37,6 +40,7 @@ export const ResultBoardMB: React.FC<ResultBoardMBProps> = ({
   }, [isFullscreen]);
 
   const formatNumber = (numStr: string) => {
+    if (data.isPending) return numStr;
     if (displayMode === '2digits') return numStr.slice(-2);
     if (displayMode === '3digits') return numStr.slice(-3);
     return numStr;
@@ -45,14 +49,18 @@ export const ResultBoardMB: React.FC<ResultBoardMBProps> = ({
   const handleCopy = () => {
     const textToCopy = `[KẾT QUẢ XSMB NGÀY ${data.date}]
 Đài: ${data.stationName}
-Đặc Biệt: ${data.prizes.special.join(' - ')} (Mã: ${data.specialCodes.join(', ')})
+${
+  data.isPending
+    ? 'Tình trạng: ĐANG CHỜ MỞ THƯỞNG (18h15)'
+    : `Đặc Biệt: ${data.prizes.special.join(' - ')} (Mã: ${data.specialCodes.join(', ')})
 Giải Nhất: ${data.prizes.first.join(' - ')}
 Giải Nhì: ${data.prizes.second.join(' - ')}
 Giải Ba: ${data.prizes.third.join(' - ')}
 Giải Tư: ${data.prizes.fourth.join(' - ')}
 Giải Năm: ${data.prizes.fifth.join(' - ')}
 Giải Sáu: ${data.prizes.sixth.join(' - ')}
-Giải Bảy: ${data.prizes.seventh.join(' - ')}
+Giải Bảy: ${data.prizes.seventh.join(' - ')}`
+}
 Nguồn: Xổ số đây (xosoday.vn)`;
 
     navigator.clipboard.writeText(textToCopy);
@@ -83,6 +91,12 @@ Nguồn: Xổ số đây (xosoday.vn)`;
               <MapPin className="w-3 h-3" />
               {data.stationName}
             </span>
+            {data.isPending && (
+              <span className="text-amber-400 text-xs font-semibold bg-amber-950/70 border border-amber-800 px-2 py-0.5 rounded flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                Chờ quay 18:15
+              </span>
+            )}
           </div>
           <h2 className="text-lg sm:text-xl font-bold tracking-tight">
             Xổ Số Kiến Thiết Miền Bắc (XSMB)
@@ -141,17 +155,34 @@ Nguồn: Xổ số đây (xosoday.vn)`;
         </div>
       </div>
 
+      {/* Waiting for Results Banner if date is pending / in the future */}
+      {data.isPending && (
+        <WaitingResultBanner
+          regionName="Miền Bắc"
+          stationName={data.stationName}
+          dateStr={selectedDate}
+          drawTime={data.drawTime || '18:15'}
+          onGoToday={() => onDateChange(TODAY_STR)}
+        />
+      )}
+
       {/* Sub-bar: Display options and Special Codes */}
       <div className="bg-slate-50 border-b border-slate-200 px-5 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-slate-700">Mã ĐB trúng phụ:</span>
-          <div className="flex gap-1.5 font-mono font-bold text-red-600">
-            {data.specialCodes.map((code, idx) => (
-              <span key={idx} className="bg-red-50 border border-red-200 px-2 py-0.5 rounded text-sm sm:text-base font-extrabold">
-                {code}
-              </span>
-            ))}
-          </div>
+          {data.isPending ? (
+            <span className="text-amber-800 bg-amber-100/90 border border-amber-300 px-2.5 py-0.5 rounded text-xs font-bold">
+              Chờ mở thưởng lúc 18:15
+            </span>
+          ) : (
+            <div className="flex gap-1.5 font-mono font-bold text-red-600">
+              {data.specialCodes.map((code, idx) => (
+                <span key={idx} className="bg-red-50 border border-red-200 px-2 py-0.5 rounded text-sm sm:text-base font-extrabold">
+                  {code}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Mode Selector */}
@@ -201,9 +232,20 @@ Nguồn: Xổ số đây (xosoday.vn)`;
                   Đặc Biệt
                 </td>
                 <td className="py-4 px-3">
-                  <span className="font-mono text-4xl sm:text-6xl font-black text-red-600 tracking-wider tabular-nums">
-                    {formatNumber(data.prizes.special[0])}
-                  </span>
+                  {data.isPending ? (
+                    <div className="flex items-center justify-center gap-3">
+                      <span className="font-mono text-4xl sm:text-6xl font-black text-red-400/60 tracking-widest tabular-nums animate-pulse">
+                        {data.prizes.special[0]}
+                      </span>
+                      <span className="text-xs px-2.5 py-1 bg-amber-100 text-amber-800 font-bold border border-amber-300 rounded-full shrink-0">
+                        Chờ quay 18:15
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="font-mono text-4xl sm:text-6xl font-black text-red-600 tracking-wider tabular-nums">
+                      {formatNumber(data.prizes.special[0])}
+                    </span>
+                  )}
                 </td>
               </tr>
 
@@ -345,6 +387,12 @@ Nguồn: Xổ số đây (xosoday.vn)`;
             <p className="text-[11px] text-slate-500">2 số cuối các giải thưởng</p>
           </div>
 
+          {data.isPending && (
+            <div className="mb-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-center text-xs text-amber-800 font-semibold">
+              Đang chờ quay thưởng · Bảng sẽ tự động cập nhật khi có kết quả
+            </div>
+          )}
+
           <table className="w-full text-xs border border-slate-200 rounded-lg overflow-hidden bg-white">
             <thead>
               <tr className="bg-slate-100 text-slate-700 border-b border-slate-200 font-semibold">
@@ -373,6 +421,8 @@ Nguồn: Xổ số đây (xosoday.vn)`;
                             </span>
                           ))}
                         </div>
+                      ) : data.isPending ? (
+                        <span className="text-slate-400 font-mono text-xs">...</span>
                       ) : (
                         <span className="text-slate-300">-</span>
                       )}
@@ -390,6 +440,8 @@ Nguồn: Xổ số đây (xosoday.vn)`;
         <span className="text-[11px] text-slate-500 font-medium">
           {isFullscreen
             ? '💡 Đang ở chế độ toàn màn hình · Nhấn ESC hoặc nút bên phải để thu nhỏ'
+            : data.isPending
+            ? `⏳ Đang ở chế độ chờ cập nhật kết quả kỳ quay ${data.date} (18h15)`
             : 'Xổ số kiến thiết Miền Bắc'}
         </span>
 

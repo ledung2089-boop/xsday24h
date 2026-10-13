@@ -14,6 +14,8 @@ import { XoSoDayLogo } from './components/Logo';
 import {
   TODAY_STR,
   YESTERDAY_STR,
+  TOMORROW_STR,
+  isFutureDate,
   generateMBResult,
   generateMNMTResult,
   VIETLOTT_MEGA_645,
@@ -193,7 +195,9 @@ export default function App() {
                 </span>
                 <div>
                   <span className="font-bold text-slate-800">
-                    {isLiveApi
+                    {isFutureDate(selectedDate)
+                      ? `Kỳ quay tương lai (${selectedDate}) · Đang ở chế độ chờ mở thưởng`
+                      : isLiveApi
                       ? 'Dữ liệu trực tiếp từ XoSoAPI (xosoapi.online)'
                       : 'Chế độ mô phỏng / Đang chờ dữ liệu'}
                   </span>
@@ -276,6 +280,17 @@ export default function App() {
                 >
                   Hôm qua
                 </button>
+                <button
+                  onClick={() => setSelectedDate(TOMORROW_STR)}
+                  className={`px-2.5 py-1.5 rounded-lg font-medium transition-colors cursor-pointer ${
+                    selectedDate === TOMORROW_STR
+                      ? 'bg-amber-600 text-white font-bold'
+                      : 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100'
+                  }`}
+                  title="Xem ngày mai (chế độ chờ mở thưởng)"
+                >
+                  Ngày mai
+                </button>
                 <div className="flex items-center bg-slate-100 rounded-lg px-2.5 py-1.5 border border-slate-200 text-slate-700">
                   <Calendar className="w-3.5 h-3.5 mr-1 text-slate-400" />
                   <input
@@ -287,6 +302,29 @@ export default function App() {
                 </div>
               </div>
             </div>
+
+            {/* Future Date Notification Banner */}
+            {isFutureDate(selectedDate) && (
+              <div className="bg-amber-50/90 border border-amber-300 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs sm:text-sm text-amber-900 shadow-2xs">
+                <div className="flex items-center gap-3">
+                  <Clock className="w-5 h-5 text-amber-600 shrink-0" />
+                  <div>
+                    <p className="font-bold text-amber-950">
+                      Chế độ chờ đợi cập nhật kết quả: Kỳ quay ngày {selectedDate}
+                    </p>
+                    <p className="text-xs text-amber-800 mt-0.5">
+                      Bạn đang xem lịch mở thưởng của ngày tiếp theo trong tương lai. Tất cả các bảng kết quả đang hiển thị danh sách đài mở thưởng và đếm ngược chờ quay thưởng.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedDate(TODAY_STR)}
+                  className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold shrink-0 transition-colors cursor-pointer whitespace-nowrap"
+                >
+                  Về hôm nay
+                </button>
+              </div>
+            )}
 
             {/* Lottery Results Display */}
             <div className="space-y-10">
