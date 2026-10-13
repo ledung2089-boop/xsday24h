@@ -1,0 +1,6 @@
+{
+  "name": "XoSoVip - Cổng Kết Quả Xổ Số Kiến Thiết 3 Miền & Vietlott",
+  "description": "Tra cứu kết quả xổ số kiến thiết Miền Bắc, Miền Trung, Miền Nam, Vietlott trực tiếp, dò vé số tự động chính xác, quay thử thần tài và thống kê chuyên sâu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
