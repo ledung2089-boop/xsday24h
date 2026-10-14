@@ -10,6 +10,7 @@ import {
   Minimize2,
   X,
   Clock,
+  Loader2,
 } from 'lucide-react';
 import { WaitingResultBanner } from './WaitingResultBanner';
 import { TODAY_STR } from '../data/lotteryData';
@@ -45,6 +46,28 @@ export const ResultBoardMN: React.FC<ResultBoardMNProps> = ({
     if (data.isPending) return numStr;
     if (displayMode === '2digits') return numStr.slice(-2);
     return numStr;
+  };
+
+  const renderPrizeNumber = (
+    num: string,
+    isStationPending?: boolean,
+    customColor: string = 'text-slate-900'
+  ) => {
+    const isPending = Boolean(data.isPending || isStationPending || !num || /^[-–—\s]+$/.test(num));
+    if (isPending) {
+      return (
+        <span className="inline-flex items-center justify-center text-amber-500 py-1" title="Đang chờ quay & cập nhật">
+          <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 animate-spin text-amber-500 shrink-0" />
+        </span>
+      );
+    }
+    return (
+      <span
+        className={`font-mono text-3xl sm:text-5xl font-black tracking-wide tabular-nums ${customColor}`}
+      >
+        {formatNumber(num)}
+      </span>
+    );
   };
 
   const handleCopy = () => {
@@ -102,8 +125,8 @@ Nguồn: Xổ số đây (xosoday.vn)`;
               {data.stations.length} đài mở thưởng
             </span>
             {data.isPending && (
-              <span className="text-amber-400 text-xs font-semibold bg-amber-950/70 border border-amber-800 px-2 py-0.5 rounded flex items-center gap-1">
-                <Clock className="w-3 h-3" />
+              <span className="text-amber-400 text-xs font-semibold bg-amber-950/70 border border-amber-800 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+                <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
                 Chờ quay {defaultDrawTime}
               </span>
             )}
@@ -232,9 +255,9 @@ Nguồn: Xổ số đây (xosoday.vn)`;
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-3 px-2 font-mono text-2xl sm:text-3xl font-black text-red-600 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3 px-2 border-r border-slate-200 last:border-r-0"
                 >
-                  {formatNumber(station.prizes.eighth[0])}
+                  {renderPrizeNumber(station.prizes.eighth[0], station.isPending, 'text-red-600')}
                 </td>
               ))}
             </tr>
@@ -247,9 +270,9 @@ Nguồn: Xổ số đây (xosoday.vn)`;
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-3 px-2 font-mono text-xl sm:text-2xl font-extrabold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3 px-2 border-r border-slate-200 last:border-r-0"
                 >
-                  {formatNumber(station.prizes.seventh[0])}
+                  {renderPrizeNumber(station.prizes.seventh[0], station.isPending, 'text-slate-900')}
                 </td>
               ))}
             </tr>
@@ -262,11 +285,13 @@ Nguồn: Xổ số đây (xosoday.vn)`;
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-3.5 px-2 font-mono text-lg sm:text-xl font-extrabold text-slate-800 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3.5 px-2 border-r border-slate-200 last:border-r-0"
                 >
-                  <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-col gap-2 items-center justify-center">
                     {station.prizes.sixth.map((num, i) => (
-                      <span key={i}>{formatNumber(num)}</span>
+                      <React.Fragment key={i}>
+                        {renderPrizeNumber(num, station.isPending, 'text-slate-800')}
+                      </React.Fragment>
                     ))}
                   </div>
                 </td>
@@ -281,9 +306,9 @@ Nguồn: Xổ số đây (xosoday.vn)`;
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-3 px-2 font-mono text-xl sm:text-2xl font-extrabold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3 px-2 border-r border-slate-200 last:border-r-0"
                 >
-                  {formatNumber(station.prizes.fifth[0])}
+                  {renderPrizeNumber(station.prizes.fifth[0], station.isPending, 'text-slate-900')}
                 </td>
               ))}
             </tr>
@@ -296,11 +321,13 @@ Nguồn: Xổ số đây (xosoday.vn)`;
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-4 px-2 font-mono text-base sm:text-xl font-bold text-slate-800 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-4 px-2 border-r border-slate-200 last:border-r-0"
                 >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 justify-items-center">
                     {station.prizes.fourth.map((num, i) => (
-                      <span key={i}>{formatNumber(num)}</span>
+                      <React.Fragment key={i}>
+                        {renderPrizeNumber(num, station.isPending, 'text-slate-800')}
+                      </React.Fragment>
                     ))}
                   </div>
                 </td>
@@ -315,11 +342,13 @@ Nguồn: Xổ số đây (xosoday.vn)`;
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-3.5 px-2 font-mono text-lg sm:text-xl font-extrabold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3.5 px-2 border-r border-slate-200 last:border-r-0"
                 >
-                  <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-col gap-2 items-center justify-center">
                     {station.prizes.third.map((num, i) => (
-                      <span key={i}>{formatNumber(num)}</span>
+                      <React.Fragment key={i}>
+                        {renderPrizeNumber(num, station.isPending, 'text-slate-900')}
+                      </React.Fragment>
                     ))}
                   </div>
                 </td>
@@ -334,9 +363,9 @@ Nguồn: Xổ số đây (xosoday.vn)`;
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-3 px-2 font-mono text-xl sm:text-2xl font-extrabold text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3 px-2 border-r border-slate-200 last:border-r-0"
                 >
-                  {formatNumber(station.prizes.second[0])}
+                  {renderPrizeNumber(station.prizes.second[0], station.isPending, 'text-slate-900')}
                 </td>
               ))}
             </tr>
@@ -349,26 +378,38 @@ Nguồn: Xổ số đây (xosoday.vn)`;
               {data.stations.map((station) => (
                 <td
                   key={station.stationId}
-                  className="py-3.5 px-2 font-mono text-2xl sm:text-3xl font-black text-slate-900 border-r border-slate-200 last:border-r-0 tabular-nums"
+                  className="py-3.5 px-2 border-r border-slate-200 last:border-r-0"
                 >
-                  {formatNumber(station.prizes.first[0])}
+                  {renderPrizeNumber(station.prizes.first[0], station.isPending, 'text-slate-900')}
                 </td>
               ))}
             </tr>
 
             {/* Giải Đặc Biệt */}
             <tr className="bg-red-50/60 border-t-2 border-red-200">
-              <td className="py-4 px-2 font-bold text-red-700 bg-red-100/50 border-r border-slate-200">
+              <td className="py-5 px-2 font-extrabold text-red-700 bg-red-100/50 border-r border-slate-200">
                 Đặc Biệt
               </td>
-              {data.stations.map((station) => (
-                <td
-                  key={station.stationId}
-                  className="py-4 px-2 font-mono text-3xl sm:text-5xl font-black text-red-600 border-r border-slate-200 last:border-r-0 tracking-wider tabular-nums"
-                >
-                  {formatNumber(station.prizes.special[0])}
-                </td>
-              ))}
+              {data.stations.map((station) => {
+                const isPending = data.isPending || station.isPending;
+                return (
+                  <td
+                    key={station.stationId}
+                    className="py-5 px-2 border-r border-slate-200 last:border-r-0"
+                  >
+                    {isPending ? (
+                      <div className="inline-flex items-center justify-center gap-2.5 text-amber-600 font-mono text-3xl sm:text-5xl font-black tabular-nums">
+                        <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 text-amber-500 animate-spin shrink-0" />
+                        <span>{station.prizes.special[0]}</span>
+                      </div>
+                    ) : (
+                      <span className="font-mono text-3xl sm:text-5xl font-black text-red-600 tracking-wider tabular-nums drop-shadow-xs">
+                        {formatNumber(station.prizes.special[0])}
+                      </span>
+                    )}
+                  </td>
+                );
+              })}
             </tr>
           </tbody>
         </table>
@@ -381,8 +422,9 @@ Nguồn: Xổ số đây (xosoday.vn)`;
         </h4>
 
         {data.isPending && (
-          <div className="mb-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-center text-xs text-amber-800 font-semibold">
-            Đang chờ mở thưởng · Bảng đầu đuôi các đài sẽ tự động cập nhật khi có kết quả
+          <div className="mb-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-center text-xs text-amber-800 font-semibold flex items-center justify-center gap-2">
+            <Loader2 className="w-4 h-4 text-amber-600 animate-spin shrink-0" />
+            <span>Đang chờ mở thưởng · Bảng đầu đuôi các đài sẽ tự động cập nhật khi có kết quả</span>
           </div>
         )}
 
@@ -394,8 +436,9 @@ Nguồn: Xổ số đây (xosoday.vn)`;
             >
               <div className="text-xs font-bold text-slate-800 pb-2 mb-2 border-b border-slate-100 flex items-center justify-between">
                 <span>{station.stationName}</span>
-                {data.isPending && (
-                  <span className="text-[10px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-normal">
+                {(data.isPending || station.isPending) && (
+                  <span className="text-[10px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">
+                    <Loader2 className="w-3 h-3 text-amber-600 animate-spin shrink-0" />
                     Chờ quay
                   </span>
                 )}
@@ -416,8 +459,10 @@ Nguồn: Xổ số đây (xosoday.vn)`;
                               <span className="text-red-600 font-bold">{t}</span>
                             </span>
                           ))
-                        ) : data.isPending ? (
-                          <span className="text-slate-400 font-mono text-xs">...</span>
+                        ) : data.isPending || station.isPending ? (
+                          <span className="text-amber-500 flex items-center justify-center py-0.5">
+                            <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0 text-amber-500" />
+                          </span>
                         ) : (
                           <span className="text-slate-300">-</span>
                         )}
@@ -433,12 +478,19 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
       {/* Bottom Bar: Fullscreen / Minimize button at the bottom-right corner */}
       <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-t border-slate-200">
-        <span className="text-[11px] text-slate-500 font-medium">
-          {isFullscreen
-            ? '💡 Đang ở chế độ toàn màn hình · Nhấn ESC hoặc nút bên phải để thu nhỏ'
-            : data.isPending
-            ? `⏳ Đang ở chế độ chờ cập nhật kết quả kỳ quay ${data.date} (${defaultDrawTime})`
-            : `${title} (${data.region === 'MN' ? 'XSMN' : 'XSMT'})`}
+        <span className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+          {isFullscreen ? (
+            '💡 Đang ở chế độ toàn màn hình · Nhấn ESC hoặc nút bên phải để thu nhỏ'
+          ) : data.isPending ? (
+            <>
+              <Loader2 className="w-3.5 h-3.5 text-amber-600 animate-spin shrink-0" />
+              <span className="text-amber-800 font-semibold">
+                Đang ở chế độ chờ cập nhật kết quả kỳ quay {data.date} ({defaultDrawTime})
+              </span>
+            </>
+          ) : (
+            `${title} (${data.region === 'MN' ? 'XSMN' : 'XSMT'})`
+          )}
         </span>
 
         {/* Nút phóng to / thu nhỏ ở góc dưới cùng bên phải */}

@@ -92,20 +92,20 @@ export const VietlottSection: React.FC<VietlottSectionProps> = ({
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2.5">
                   Bộ Số Trúng Thưởng
                 </p>
-                <div className="flex items-center gap-2.5 sm:gap-4 flex-wrap">
+                <div className="flex items-center gap-3 sm:gap-5 flex-wrap">
                   {powerData.winningNumbers.map((num, i) => (
                     <div
                       key={i}
-                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-red-600 text-white font-mono font-black text-2xl sm:text-3xl flex items-center justify-center shadow-lg shadow-red-200"
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-red-600 text-white font-mono font-black text-3xl sm:text-5xl flex items-center justify-center shadow-xl shadow-red-200"
                     >
                       {num.toString().padStart(2, '0')}
                     </div>
                   ))}
                   {powerData.specialNumber && (
-                    <div className="flex items-center gap-2 sm:gap-3 ml-1 sm:ml-2">
-                      <span className="text-slate-300 font-bold text-2xl">|</span>
+                    <div className="flex items-center gap-2 sm:gap-4 ml-1 sm:ml-2">
+                      <span className="text-slate-300 font-bold text-3xl">|</span>
                       <div
-                        className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-amber-500 text-slate-900 font-mono font-black text-2xl sm:text-3xl flex items-center justify-center shadow-lg shadow-amber-200"
+                        className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-amber-500 text-slate-900 font-mono font-black text-3xl sm:text-5xl flex items-center justify-center shadow-xl shadow-amber-200"
                         title="Số đặc biệt Jackpot 2"
                       >
                         {powerData.specialNumber.toString().padStart(2, '0')}
@@ -238,11 +238,11 @@ export const VietlottSection: React.FC<VietlottSectionProps> = ({
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2.5">
                   Bộ Số Trúng Thưởng
                 </p>
-                <div className="flex items-center gap-2.5 sm:gap-4 flex-wrap">
+                <div className="flex items-center gap-3 sm:gap-5 flex-wrap">
                   {megaData.winningNumbers.map((num, i) => (
                     <div
                       key={i}
-                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-orange-600 text-white font-mono font-black text-2xl sm:text-3xl flex items-center justify-center shadow-lg shadow-orange-200"
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-orange-600 text-white font-mono font-black text-3xl sm:text-5xl flex items-center justify-center shadow-xl shadow-orange-200"
                     >
                       {num.toString().padStart(2, '0')}
                     </div>

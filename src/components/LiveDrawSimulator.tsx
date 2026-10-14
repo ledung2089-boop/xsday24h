@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Region, StationInfo } from '../types/lottery';
 import { LOTTERY_STATIONS, computeHeadTail } from '../data/lotteryData';
 import { sound } from '../utils/audio';
-import { Play, RotateCcw, FastForward, Sparkles, Volume2, VolumeX, Maximize2, Minimize2, X } from 'lucide-react';
+import { Play, RotateCcw, FastForward, Sparkles, Volume2, VolumeX, Maximize2, Minimize2, X, Loader2 } from 'lucide-react';
 
 export const LiveDrawSimulator: React.FC = () => {
   const [region, setRegion] = useState<Region>('MB');
@@ -37,6 +37,17 @@ export const LiveDrawSimulator: React.FC = () => {
       str += Math.floor(Math.random() * 10).toString();
     }
     return str;
+  };
+
+  const renderSimNumber = (num: string | undefined, colorClass: string = 'text-slate-900') => {
+    if (!num || /^[-–—\s]+$/.test(num)) {
+      return (
+        <span className="inline-flex items-center justify-center text-amber-500 py-1" title="Đang chờ quay thưởng">
+          <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 animate-spin text-amber-500 shrink-0" />
+        </span>
+      );
+    }
+    return <span className={`font-mono text-3xl sm:text-5xl font-black tabular-nums tracking-wide ${colorClass}`}>{num}</span>;
   };
 
   const handleRegionChange = (newReg: Region) => {
@@ -357,8 +368,8 @@ export const LiveDrawSimulator: React.FC = () => {
                   <td className="w-28 py-4 px-3 font-bold text-red-700 bg-red-100/50 border-r border-slate-200">
                     Đặc Biệt
                   </td>
-                  <td className="py-4 px-3 font-mono text-4xl sm:text-6xl font-black text-red-600 tracking-wider tabular-nums">
-                    {drawnPrizes.special ? drawnPrizes.special[0] : '-----'}
+                  <td className="py-4 px-3">
+                    {renderSimNumber(drawnPrizes.special ? drawnPrizes.special[0] : undefined, 'text-red-600')}
                   </td>
                 </tr>
 
@@ -367,8 +378,8 @@ export const LiveDrawSimulator: React.FC = () => {
                   <td className="py-3.5 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Nhất
                   </td>
-                  <td className="py-3.5 px-3 font-mono font-extrabold text-slate-900 text-2xl sm:text-4xl tabular-nums">
-                    {drawnPrizes.first ? drawnPrizes.first[0] : '-----'}
+                  <td className="py-3.5 px-3">
+                    {renderSimNumber(drawnPrizes.first ? drawnPrizes.first[0] : undefined, 'text-slate-900')}
                   </td>
                 </tr>
 
@@ -377,10 +388,10 @@ export const LiveDrawSimulator: React.FC = () => {
                   <td className="py-3.5 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Nhì
                   </td>
-                  <td className="py-3.5 px-3 font-mono font-extrabold text-slate-900 text-xl sm:text-3xl tabular-nums">
-                    <div className="flex justify-around">
-                      <span>{drawnPrizes.second ? drawnPrizes.second[0] || '-----' : '-----'}</span>
-                      <span>{drawnPrizes.second ? drawnPrizes.second[1] || '-----' : '-----'}</span>
+                  <td className="py-3.5 px-3">
+                    <div className="flex justify-around items-center">
+                      <span>{renderSimNumber(drawnPrizes.second ? drawnPrizes.second[0] : undefined, 'text-slate-900')}</span>
+                      <span>{renderSimNumber(drawnPrizes.second ? drawnPrizes.second[1] : undefined, 'text-slate-900')}</span>
                     </div>
                   </td>
                 </tr>
@@ -390,11 +401,11 @@ export const LiveDrawSimulator: React.FC = () => {
                   <td className="py-3.5 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Ba
                   </td>
-                  <td className="py-3.5 px-3 font-mono font-bold text-slate-800 text-lg sm:text-2xl tabular-nums">
-                    <div className="grid grid-cols-3 gap-2.5">
+                  <td className="py-3.5 px-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 items-center">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
                         <span key={i}>
-                          {drawnPrizes.third ? drawnPrizes.third[i] || '-----' : '-----'}
+                          {renderSimNumber(drawnPrizes.third ? drawnPrizes.third[i] : undefined, 'text-slate-900')}
                         </span>
                       ))}
                     </div>
@@ -406,11 +417,11 @@ export const LiveDrawSimulator: React.FC = () => {
                   <td className="py-3.5 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Tư
                   </td>
-                  <td className="py-3.5 px-3 font-mono font-bold text-slate-800 text-lg sm:text-2xl tabular-nums">
-                    <div className="grid grid-cols-4 gap-2.5">
+                  <td className="py-3.5 px-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 items-center">
                       {[0, 1, 2, 3].map((i) => (
                         <span key={i}>
-                          {drawnPrizes.fourth ? drawnPrizes.fourth[i] || '----' : '----'}
+                          {renderSimNumber(drawnPrizes.fourth ? drawnPrizes.fourth[i] : undefined, 'text-slate-900')}
                         </span>
                       ))}
                     </div>
@@ -422,11 +433,11 @@ export const LiveDrawSimulator: React.FC = () => {
                   <td className="py-3.5 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Năm
                   </td>
-                  <td className="py-3.5 px-3 font-mono font-bold text-slate-800 text-lg sm:text-2xl tabular-nums">
-                    <div className="grid grid-cols-3 gap-2.5">
+                  <td className="py-3.5 px-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 items-center">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
                         <span key={i}>
-                          {drawnPrizes.fifth ? drawnPrizes.fifth[i] || '----' : '----'}
+                          {renderSimNumber(drawnPrizes.fifth ? drawnPrizes.fifth[i] : undefined, 'text-slate-900')}
                         </span>
                       ))}
                     </div>
@@ -438,11 +449,11 @@ export const LiveDrawSimulator: React.FC = () => {
                   <td className="py-3.5 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Sáu
                   </td>
-                  <td className="py-3.5 px-3 font-mono font-extrabold text-slate-900 text-xl sm:text-3xl tabular-nums">
-                    <div className="flex justify-around">
+                  <td className="py-3.5 px-3">
+                    <div className="flex justify-around items-center">
                       {[0, 1, 2].map((i) => (
                         <span key={i}>
-                          {drawnPrizes.sixth ? drawnPrizes.sixth[i] || '---' : '---'}
+                          {renderSimNumber(drawnPrizes.sixth ? drawnPrizes.sixth[i] : undefined, 'text-slate-900')}
                         </span>
                       ))}
                     </div>
@@ -454,11 +465,11 @@ export const LiveDrawSimulator: React.FC = () => {
                   <td className="py-3.5 px-3 font-bold text-red-700 bg-red-50/60 border-r border-slate-200">
                     Giải Bảy
                   </td>
-                  <td className="py-3.5 px-3 font-mono font-black text-red-600 text-xl sm:text-3xl tabular-nums">
-                    <div className="grid grid-cols-4 gap-2.5">
+                  <td className="py-3.5 px-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 items-center">
                       {[0, 1, 2, 3].map((i) => (
                         <span key={i}>
-                          {drawnPrizes.seventh ? drawnPrizes.seventh[i] || '--' : '--'}
+                          {renderSimNumber(drawnPrizes.seventh ? drawnPrizes.seventh[i] : undefined, 'text-red-600')}
                         </span>
                       ))}
                     </div>
@@ -474,34 +485,34 @@ export const LiveDrawSimulator: React.FC = () => {
                   <td className="w-28 py-4 px-3 font-bold text-red-700 bg-red-100/50 border-r border-slate-200">
                     Đặc Biệt
                   </td>
-                  <td className="py-4 px-3 font-mono text-3xl sm:text-5xl font-black text-red-600 tracking-wider tabular-nums">
-                    {drawnPrizes.special ? drawnPrizes.special[0] : '------'}
+                  <td className="py-4 px-3">
+                    {renderSimNumber(drawnPrizes.special ? drawnPrizes.special[0] : undefined, 'text-red-600')}
                   </td>
                 </tr>
                 <tr>
                   <td className="py-3.5 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Nhất
                   </td>
-                  <td className="py-3.5 px-3 font-mono font-black text-slate-900 text-2xl sm:text-3xl tabular-nums">
-                    {drawnPrizes.first ? drawnPrizes.first[0] : '-----'}
+                  <td className="py-3.5 px-3">
+                    {renderSimNumber(drawnPrizes.first ? drawnPrizes.first[0] : undefined, 'text-slate-900')}
                   </td>
                 </tr>
                 <tr className="bg-slate-50/40">
                   <td className="py-3.5 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Nhì
                   </td>
-                  <td className="py-3.5 px-3 font-mono font-extrabold text-slate-900 text-xl sm:text-2xl tabular-nums">
-                    {drawnPrizes.second ? drawnPrizes.second[0] : '-----'}
+                  <td className="py-3.5 px-3">
+                    {renderSimNumber(drawnPrizes.second ? drawnPrizes.second[0] : undefined, 'text-slate-900')}
                   </td>
                 </tr>
                 <tr>
                   <td className="py-3.5 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Ba
                   </td>
-                  <td className="py-3.5 px-3 font-mono font-extrabold text-slate-800 text-lg sm:text-xl tabular-nums">
-                    <div className="flex justify-around">
-                      <span>{drawnPrizes.third ? drawnPrizes.third[0] || '-----' : '-----'}</span>
-                      <span>{drawnPrizes.third ? drawnPrizes.third[1] || '-----' : '-----'}</span>
+                  <td className="py-3.5 px-3">
+                    <div className="flex justify-around items-center">
+                      <span>{renderSimNumber(drawnPrizes.third ? drawnPrizes.third[0] : undefined, 'text-slate-900')}</span>
+                      <span>{renderSimNumber(drawnPrizes.third ? drawnPrizes.third[1] : undefined, 'text-slate-900')}</span>
                     </div>
                   </td>
                 </tr>
@@ -509,11 +520,11 @@ export const LiveDrawSimulator: React.FC = () => {
                   <td className="py-4 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Tư
                   </td>
-                  <td className="py-4 px-3 font-mono font-bold text-slate-800 text-base sm:text-xl tabular-nums">
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <td className="py-4 px-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 items-center">
                       {[0, 1, 2, 3, 4, 5, 6].map((i) => (
                         <span key={i}>
-                          {drawnPrizes.fourth ? drawnPrizes.fourth[i] || '-----' : '-----'}
+                          {renderSimNumber(drawnPrizes.fourth ? drawnPrizes.fourth[i] : undefined, 'text-slate-900')}
                         </span>
                       ))}
                     </div>
@@ -523,19 +534,19 @@ export const LiveDrawSimulator: React.FC = () => {
                   <td className="py-3 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Năm
                   </td>
-                  <td className="py-3 px-3 font-mono font-extrabold text-slate-900 text-xl sm:text-2xl tabular-nums">
-                    {drawnPrizes.fifth ? drawnPrizes.fifth[0] : '----'}
+                  <td className="py-3 px-3">
+                    {renderSimNumber(drawnPrizes.fifth ? drawnPrizes.fifth[0] : undefined, 'text-slate-900')}
                   </td>
                 </tr>
                 <tr className="bg-slate-50/40">
                   <td className="py-3.5 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Sáu
                   </td>
-                  <td className="py-3.5 px-3 font-mono font-extrabold text-slate-800 text-lg sm:text-xl tabular-nums">
-                    <div className="flex justify-around">
+                  <td className="py-3.5 px-3">
+                    <div className="flex justify-around items-center">
                       {[0, 1, 2].map((i) => (
                         <span key={i}>
-                          {drawnPrizes.sixth ? drawnPrizes.sixth[i] || '----' : '----'}
+                          {renderSimNumber(drawnPrizes.sixth ? drawnPrizes.sixth[i] : undefined, 'text-slate-900')}
                         </span>
                       ))}
                     </div>
@@ -545,16 +556,16 @@ export const LiveDrawSimulator: React.FC = () => {
                   <td className="py-3 px-3 font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
                     Giải Bảy
                   </td>
-                  <td className="py-3 px-3 font-mono font-extrabold text-slate-900 text-xl sm:text-2xl tabular-nums">
-                    {drawnPrizes.seventh ? drawnPrizes.seventh[0] : '---'}
+                  <td className="py-3 px-3">
+                    {renderSimNumber(drawnPrizes.seventh ? drawnPrizes.seventh[0] : undefined, 'text-slate-900')}
                   </td>
                 </tr>
                 <tr className="bg-red-50/30">
                   <td className="py-3 px-3 font-bold text-red-700 bg-red-50/60 border-r border-slate-200">
                     Giải Tám
                   </td>
-                  <td className="py-3 px-3 font-mono font-black text-red-600 text-2xl sm:text-3xl tabular-nums">
-                    {drawnPrizes.eighth ? drawnPrizes.eighth[0] : '--'}
+                  <td className="py-3 px-3">
+                    {renderSimNumber(drawnPrizes.eighth ? drawnPrizes.eighth[0] : undefined, 'text-red-600')}
                   </td>
                 </tr>
               </tbody>

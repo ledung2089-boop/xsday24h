@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, RefreshCw, Sparkles, Calendar, AlertCircle } from 'lucide-react';
+import { Clock, RefreshCw, Sparkles, Calendar, AlertCircle, Loader2 } from 'lucide-react';
 
 interface WaitingResultBannerProps {
   regionName: string;
@@ -71,15 +71,15 @@ export const WaitingResultBanner: React.FC<WaitingResultBannerProps> = ({
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         {/* Left: Status info */}
         <div className="space-y-1.5 max-w-xl">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="flex items-center justify-center p-1 bg-amber-100 border border-amber-300 rounded-full shadow-2xs">
+              <Loader2 className="w-4 h-4 text-amber-600 animate-spin shrink-0" />
             </span>
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded border border-amber-300">
-              Đang Chờ Cập Nhật Kết Quả
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-900 bg-amber-100/90 px-2.5 py-0.5 rounded-full border border-amber-300 flex items-center gap-1.5 shadow-2xs">
+              <Loader2 className="w-3.5 h-3.5 text-amber-600 animate-spin shrink-0" />
+              Chế Độ Chờ Cập Nhật Kết Quả
             </span>
-            <span className="text-xs text-amber-700 font-semibold flex items-center gap-1">
+            <span className="text-xs text-amber-700 font-semibold flex items-center gap-1 bg-white/80 border border-amber-200 px-2.5 py-0.5 rounded-full">
               <Clock className="w-3.5 h-3.5 text-amber-600" />
               Mở thưởng lúc {drawTime}
             </span>
@@ -97,7 +97,12 @@ export const WaitingResultBanner: React.FC<WaitingResultBannerProps> = ({
         {/* Right: Countdown Boxes */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full lg:w-auto">
           {!timeLeft.isPast ? (
-            <div className="flex items-center gap-1.5 bg-white p-2 sm:p-2.5 rounded-xl border border-amber-200 shadow-2xs">
+            <div className="flex flex-col gap-1.5 w-full sm:w-auto">
+              <div className="flex items-center gap-1.5 text-[11px] font-semibold text-amber-800">
+                <Loader2 className="w-3.5 h-3.5 text-amber-600 animate-spin shrink-0" />
+                <span>Đếm ngược đến giờ mở thưởng:</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-white p-2 sm:p-2.5 rounded-xl border border-amber-200 shadow-2xs">
               <div className="flex flex-col items-center justify-center bg-amber-50 rounded-lg px-2.5 py-1 min-w-[50px] border border-amber-100">
                 <span className="font-mono text-base sm:text-xl font-black text-amber-700 tabular-nums">
                   {String(timeLeft.days).padStart(2, '0')}
@@ -125,6 +130,7 @@ export const WaitingResultBanner: React.FC<WaitingResultBannerProps> = ({
                 </span>
                 <span className="text-[10px] font-bold text-amber-800 uppercase">Giây</span>
               </div>
+            </div>
             </div>
           ) : (
             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-xl text-emerald-800 text-xs font-bold">

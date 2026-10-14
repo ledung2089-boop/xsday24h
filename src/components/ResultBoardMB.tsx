@@ -10,6 +10,7 @@ import {
   Minimize2,
   X,
   Clock,
+  Loader2,
 } from 'lucide-react';
 import { WaitingResultBanner } from './WaitingResultBanner';
 import { TODAY_STR } from '../data/lotteryData';
@@ -44,6 +45,24 @@ export const ResultBoardMB: React.FC<ResultBoardMBProps> = ({
     if (displayMode === '2digits') return numStr.slice(-2);
     if (displayMode === '3digits') return numStr.slice(-3);
     return numStr;
+  };
+
+  const renderPrizeNumber = (num: string, customColor: string = 'text-slate-900') => {
+    const isPending = Boolean(data.isPending || !num || /^[-–—\s]+$/.test(num));
+    if (isPending) {
+      return (
+        <span className="inline-flex items-center justify-center text-amber-500 py-1" title="Đang chờ quay & cập nhật">
+          <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 animate-spin text-amber-500 shrink-0" />
+        </span>
+      );
+    }
+    return (
+      <span
+        className={`font-mono text-3xl sm:text-5xl font-black tracking-wide tabular-nums ${customColor}`}
+      >
+        {formatNumber(num)}
+      </span>
+    );
   };
 
   const handleCopy = () => {
@@ -92,8 +111,8 @@ Nguồn: Xổ số đây (xosoday.vn)`;
               {data.stationName}
             </span>
             {data.isPending && (
-              <span className="text-amber-400 text-xs font-semibold bg-amber-950/70 border border-amber-800 px-2 py-0.5 rounded flex items-center gap-1">
-                <Clock className="w-3 h-3" />
+              <span className="text-amber-400 text-xs font-semibold bg-amber-950/70 border border-amber-800 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+                <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
                 Chờ quay 18:15
               </span>
             )}
@@ -171,7 +190,8 @@ Nguồn: Xổ số đây (xosoday.vn)`;
         <div className="flex items-center gap-2">
           <span className="font-semibold text-slate-700">Mã ĐB trúng phụ:</span>
           {data.isPending ? (
-            <span className="text-amber-800 bg-amber-100/90 border border-amber-300 px-2.5 py-0.5 rounded text-xs font-bold">
+            <span className="text-amber-800 bg-amber-100/90 border border-amber-300 px-2.5 py-1 rounded text-xs font-bold flex items-center gap-1.5">
+              <Loader2 className="w-3.5 h-3.5 text-amber-600 animate-spin" />
               Chờ mở thưởng lúc 18:15
             </span>
           ) : (
@@ -228,21 +248,23 @@ Nguồn: Xổ số đây (xosoday.vn)`;
             <tbody>
               {/* Giải Đặc Biệt */}
               <tr className="border-b border-slate-200 bg-red-50/50">
-                <td className="w-24 sm:w-28 py-4 px-3 text-xs sm:text-sm font-bold text-red-700 bg-red-100/50 border-r border-slate-200">
+                <td className="w-24 sm:w-28 py-5 px-3 text-sm sm:text-base font-extrabold text-red-700 bg-red-100/50 border-r border-slate-200">
                   Đặc Biệt
                 </td>
-                <td className="py-4 px-3">
+                <td className="py-5 px-3">
                   {data.isPending ? (
-                    <div className="flex items-center justify-center gap-3">
-                      <span className="font-mono text-4xl sm:text-6xl font-black text-red-400/60 tracking-widest tabular-nums animate-pulse">
-                        {data.prizes.special[0]}
-                      </span>
-                      <span className="text-xs px-2.5 py-1 bg-amber-100 text-amber-800 font-bold border border-amber-300 rounded-full shrink-0">
-                        Chờ quay 18:15
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-1">
+                      <div className="inline-flex items-center justify-center gap-2.5 text-amber-600 font-mono text-3xl sm:text-5xl font-black tabular-nums">
+                        <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 text-amber-500 animate-spin shrink-0" />
+                        <span>{data.prizes.special[0]}</span>
+                      </div>
+                      <span className="text-xs sm:text-sm px-3.5 py-1.5 bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-full flex items-center gap-2 shrink-0 shadow-2xs">
+                        <Loader2 className="w-4 h-4 text-amber-600 animate-spin shrink-0" />
+                        <span>Chờ cập nhật kết quả 18:15</span>
                       </span>
                     </div>
                   ) : (
-                    <span className="font-mono text-4xl sm:text-6xl font-black text-red-600 tracking-wider tabular-nums">
+                    <span className="font-mono text-3xl sm:text-5xl font-black text-red-600 tracking-wider tabular-nums drop-shadow-xs">
                       {formatNumber(data.prizes.special[0])}
                     </span>
                   )}
@@ -251,30 +273,25 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Nhất */}
               <tr className="border-b border-slate-100">
-                <td className="py-3.5 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+                <td className="py-4 px-3 text-xs sm:text-sm font-bold text-slate-700 bg-slate-50 border-r border-slate-200">
                   Giải Nhất
                 </td>
-                <td className="py-3.5 px-3">
-                  <span className="font-mono text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-wide tabular-nums">
-                    {formatNumber(data.prizes.first[0])}
-                  </span>
+                <td className="py-4 px-3">
+                  {renderPrizeNumber(data.prizes.first[0], 'text-slate-900')}
                 </td>
               </tr>
 
               {/* Giải Nhì */}
               <tr className="border-b border-slate-100 bg-slate-50/30">
-                <td className="py-3.5 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+                <td className="py-4 px-3 text-xs sm:text-sm font-bold text-slate-700 bg-slate-50 border-r border-slate-200">
                   Giải Nhì
                 </td>
-                <td className="py-3.5 px-3">
-                  <div className="flex items-center justify-around flex-wrap gap-3">
+                <td className="py-4 px-3">
+                  <div className="flex items-center justify-around flex-wrap gap-4">
                     {data.prizes.second.map((num, i) => (
-                      <span
-                        key={i}
-                        className="font-mono text-xl sm:text-3xl font-extrabold text-slate-900 tracking-wide tabular-nums"
-                      >
-                        {formatNumber(num)}
-                      </span>
+                      <React.Fragment key={i}>
+                        {renderPrizeNumber(num, 'text-slate-900')}
+                      </React.Fragment>
                     ))}
                   </div>
                 </td>
@@ -282,18 +299,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Ba */}
               <tr className="border-b border-slate-100">
-                <td className="py-3.5 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+                <td className="py-4 px-3 text-xs sm:text-sm font-bold text-slate-700 bg-slate-50 border-r border-slate-200">
                   Giải Ba
                 </td>
-                <td className="py-3.5 px-3">
-                  <div className="grid grid-cols-3 gap-y-2.5 gap-x-4">
+                <td className="py-4 px-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-3 gap-x-4">
                     {data.prizes.third.map((num, i) => (
-                      <span
-                        key={i}
-                        className="font-mono text-lg sm:text-2xl font-bold text-slate-800 tracking-wide tabular-nums"
-                      >
-                        {formatNumber(num)}
-                      </span>
+                      <div key={i} className="flex justify-center">
+                        {renderPrizeNumber(num, 'text-slate-800')}
+                      </div>
                     ))}
                   </div>
                 </td>
@@ -301,18 +315,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Tư */}
               <tr className="border-b border-slate-100 bg-slate-50/30">
-                <td className="py-3.5 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+                <td className="py-4 px-3 text-xs sm:text-sm font-bold text-slate-700 bg-slate-50 border-r border-slate-200">
                   Giải Tư
                 </td>
-                <td className="py-3.5 px-3">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <td className="py-4 px-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {data.prizes.fourth.map((num, i) => (
-                      <span
-                        key={i}
-                        className="font-mono text-lg sm:text-2xl font-bold text-slate-800 tracking-wide tabular-nums"
-                      >
-                        {formatNumber(num)}
-                      </span>
+                      <div key={i} className="flex justify-center">
+                        {renderPrizeNumber(num, 'text-slate-800')}
+                      </div>
                     ))}
                   </div>
                 </td>
@@ -320,18 +331,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Năm */}
               <tr className="border-b border-slate-100">
-                <td className="py-3.5 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+                <td className="py-4 px-3 text-xs sm:text-sm font-bold text-slate-700 bg-slate-50 border-r border-slate-200">
                   Giải Năm
                 </td>
-                <td className="py-3.5 px-3">
-                  <div className="grid grid-cols-3 gap-y-2.5 gap-x-4">
+                <td className="py-4 px-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-3 gap-x-4">
                     {data.prizes.fifth.map((num, i) => (
-                      <span
-                        key={i}
-                        className="font-mono text-lg sm:text-2xl font-bold text-slate-800 tracking-wide tabular-nums"
-                      >
-                        {formatNumber(num)}
-                      </span>
+                      <div key={i} className="flex justify-center">
+                        {renderPrizeNumber(num, 'text-slate-800')}
+                      </div>
                     ))}
                   </div>
                 </td>
@@ -339,18 +347,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Sáu */}
               <tr className="border-b border-slate-100 bg-slate-50/30">
-                <td className="py-3.5 px-3 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border-r border-slate-200">
+                <td className="py-4 px-3 text-xs sm:text-sm font-bold text-slate-700 bg-slate-50 border-r border-slate-200">
                   Giải Sáu
                 </td>
-                <td className="py-3.5 px-3">
-                  <div className="flex items-center justify-around flex-wrap gap-3">
+                <td className="py-4 px-3">
+                  <div className="flex items-center justify-around flex-wrap gap-4">
                     {data.prizes.sixth.map((num, i) => (
-                      <span
-                        key={i}
-                        className="font-mono text-xl sm:text-3xl font-extrabold text-slate-900 tracking-wide tabular-nums"
-                      >
-                        {formatNumber(num)}
-                      </span>
+                      <React.Fragment key={i}>
+                        {renderPrizeNumber(num, 'text-slate-900')}
+                      </React.Fragment>
                     ))}
                   </div>
                 </td>
@@ -358,18 +363,15 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
               {/* Giải Bảy */}
               <tr>
-                <td className="py-3.5 px-3 text-xs sm:text-sm font-bold text-red-700 bg-red-50/60 border-r border-slate-200">
+                <td className="py-4 px-3 text-xs sm:text-sm font-extrabold text-red-700 bg-red-50/60 border-r border-slate-200">
                   Giải Bảy
                 </td>
-                <td className="py-3.5 px-3 bg-red-50/20">
-                  <div className="grid grid-cols-4 gap-2.5">
+                <td className="py-4 px-3 bg-red-50/20">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     {data.prizes.seventh.map((num, i) => (
-                      <span
-                        key={i}
-                        className="font-mono text-xl sm:text-3xl font-black text-red-600 tracking-wide tabular-nums"
-                      >
-                        {formatNumber(num)}
-                      </span>
+                      <div key={i} className="flex justify-center">
+                        {renderPrizeNumber(num, 'text-red-600')}
+                      </div>
                     ))}
                   </div>
                 </td>
@@ -388,8 +390,9 @@ Nguồn: Xổ số đây (xosoday.vn)`;
           </div>
 
           {data.isPending && (
-            <div className="mb-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-center text-xs text-amber-800 font-semibold">
-              Đang chờ quay thưởng · Bảng sẽ tự động cập nhật khi có kết quả
+            <div className="mb-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-center text-xs text-amber-800 font-semibold flex items-center justify-center gap-2">
+              <Loader2 className="w-4 h-4 text-amber-600 animate-spin shrink-0" />
+              <span>Đang chờ quay thưởng · Bảng sẽ tự động cập nhật khi có kết quả</span>
             </div>
           )}
 
@@ -422,7 +425,9 @@ Nguồn: Xổ số đây (xosoday.vn)`;
                           ))}
                         </div>
                       ) : data.isPending ? (
-                        <span className="text-slate-400 font-mono text-xs">...</span>
+                        <span className="text-amber-500 flex items-center justify-center py-0.5">
+                          <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0 text-amber-500" />
+                        </span>
                       ) : (
                         <span className="text-slate-300">-</span>
                       )}
@@ -437,12 +442,19 @@ Nguồn: Xổ số đây (xosoday.vn)`;
 
       {/* Bottom Bar: Fullscreen / Minimize button at the bottom-right corner */}
       <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-t border-slate-200">
-        <span className="text-[11px] text-slate-500 font-medium">
-          {isFullscreen
-            ? '💡 Đang ở chế độ toàn màn hình · Nhấn ESC hoặc nút bên phải để thu nhỏ'
-            : data.isPending
-            ? `⏳ Đang ở chế độ chờ cập nhật kết quả kỳ quay ${data.date} (18h15)`
-            : 'Xổ số kiến thiết Miền Bắc'}
+        <span className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+          {isFullscreen ? (
+            '💡 Đang ở chế độ toàn màn hình · Nhấn ESC hoặc nút bên phải để thu nhỏ'
+          ) : data.isPending ? (
+            <>
+              <Loader2 className="w-3.5 h-3.5 text-amber-600 animate-spin shrink-0" />
+              <span className="text-amber-800 font-semibold">
+                Đang ở chế độ chờ cập nhật kết quả kỳ quay {data.date} (18h15)
+              </span>
+            </>
+          ) : (
+            'Xổ số kiến thiết Miền Bắc'
+          )}
         </span>
 
         {/* Nút phóng to / thu nhỏ ở góc dưới cùng bên phải */}
